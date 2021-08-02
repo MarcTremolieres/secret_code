@@ -60,21 +60,21 @@ def succes(arbre: Arbre):
 f = open("entree.txt", "r")
 #lignes = sys.stdin.readlines()
 lignes = f.readlines()
-for index in range(1, int(lignes[0]) + 1):
-    for ligne in lignes:
-        valeurs = ligne.split(' ')
-        x = complex(int(valeurs[0]), int(valeurs[1]))
-        b = complex(int(valeurs[2]), int(valeurs[3]))
-        arbre = Arbre(x)
-        rempli(arbre)
-        liste = arbre.conclusion()
-        if liste == []:
-            print("The code cannot be decrypted.")
-        else:
-            resultat = ""
-            for chiffre in liste:
-                resultat = resultat + str(chiffre) + ' '
-            print(resultat)
+for index in range(1, int(lignes[0])):
+    ligne = lignes[index]
+    valeurs = ligne.split(' ')
+    x = complex(int(valeurs[0]), int(valeurs[1]))
+    b = complex(int(valeurs[2]), int(valeurs[3]))
+    arbre = Arbre(x)
+    rempli(arbre)
+    liste = arbre.conclusion()
+    if liste == [] or liste is None:
+        print("The code cannot be decrypted.")
+    else:
+        resultat = ""
+        for chiffre in liste:
+            resultat = resultat + str(chiffre) + ' '
+        print(resultat)
 
 
 
