@@ -3,6 +3,7 @@
 #include "complexe.h"
 
 
+
 using namespace std;
 
 Complex Complex::set(int r, int i) {

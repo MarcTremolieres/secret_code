@@ -21,3 +21,8 @@ Complex produit(Complex u, Complex v);
 Complex somme(Complex u, Complex v);
 
 Complex difference(Complex u, Complex v);
+
+struct reponse {
+    int chiffre;
+    Complex next_x;
+};

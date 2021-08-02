@@ -1,10 +1,13 @@
 #include <iostream>
-#include <complex>
 #include <vector>
 #include "scribes_functions.h"
+#include "class_arbre.h"
+
 //#include <cmath>
 
+
 using namespace std;
+/*
 class Arbre{
     public:
     complex<double> x;
@@ -47,7 +50,8 @@ class Arbre{
         }
     }
 };
-
+*/
+/*
 vector<double> prochains_chiffres(complex<double> x, complex<double> b) {
 	int maxi = floor(sqrt(norm(b)));
 //    cout << maxi << "\n";
@@ -66,19 +70,45 @@ vector<double> prochains_chiffres(complex<double> x, complex<double> b) {
      }
     return liste;
 }
+*/
 
-void rempli(Arbre& arbre, complex<double> b) {
-    vector<double> prochains_c = prochains_chiffres(arbre.x, b);
-    vector<double> chiffres_fils = arbre.chiffres;
 
-    for (double chiffre: prochains_c) {
-        if (chiffre == 0) {
+vector<reponse> prochains_chiffres(Complex x, Complex b) {
+	int maxi = floor(sqrt(b.norme()));
+	vector<reponse> liste;
+    for (int a = - maxi; a <= maxi; a++) {
+        int b2 = b.norme();
+        Complex ac = Complex(a, 0);
+        Complex p = produit(difference(x,ac), b.conj());
+        
+        int r = p.reel;
+        int s = p.imag;
+        if ((r % b2 == 0) and (s % b2 == 0)){
+            int alpha = p.reel / b2;
+            int beta = p.imag / b2;
+            reponse rep;
+            rep.chiffre = a;
+            rep.next_x = Complex(alpha, beta);
+            liste.push_back(rep);
+
+        }
+     }
+    return liste;
+}
+
+
+void rempli(Arbre& arbre, Complex b) {
+    vector<reponse> prochains_c = prochains_chiffres(arbre.x, b);
+    vector<int> chiffres_fils = arbre.chiffres;
+
+    for (reponse rep : prochains_c) {
+        if (rep.chiffre == 0) {
             Arbre fils = Arbre(0, {});
             arbre.fils.push_back(fils);
         }
         else {
-            chiffres_fils.push_back(chiffre);
-            Arbre fils = Arbre((arbre.x - chiffre) / b, chiffres_fils);
+            chiffres_fils.push_back(rep.chiffre);
+            Arbre fils = Arbre(rep.next_x, chiffres_fils);
             rempli(fils, b);
             arbre.fils.push_back(fils);
         }
@@ -109,14 +139,17 @@ int main(){
    for (int index = 1; index <= nb_tests; index++) {
         string ligne = lignes[index];
         vector<string> valeurs = explode(ligne, ' ');
-        complex<double> x (stod(valeurs[0]), stod(valeurs[1]));
-        complex<double> b (stod(valeurs[2]), stod(valeurs[3]));
-        cout << "x = " << x << " and b = " << b << "\n";
-        vector<double> liste_initiale = {};
+        Complex x = Complex(stoi(valeurs[0]), stoi(valeurs[1]));
+        Complex b = Complex(stoi(valeurs[2]), stoi(valeurs[3]));
+        cout << "x = ";
+        x.affiche();
+        cout << " and b = ";
+        b.affiche();
+        vector<int> liste_initiale = {};
         Arbre arbre = Arbre(x,liste_initiale );
         rempli(arbre, b);
         arbre.affiche();
-        vector<double> liste = arbre.conclusion();
+        vector<int> liste = arbre.conclusion();
         if (liste.size() == 0) {
             cout << "The code cannot be decrypted.\n";
         }
