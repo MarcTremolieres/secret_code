@@ -43,6 +43,7 @@ class Arbre{
             for (Arbre fil : fils){
                 return fil.conclusion();
             }
+            return {};
         }
     }
 };
@@ -55,17 +56,14 @@ vector<double> prochains_chiffres(complex<double> x, complex<double> b) {
 
     for (int a = - maxi; a <= maxi; a++) {
         complex<double> ac (a, 0);
-        calcul = (x - ac) / b;
-        int partie_relle = calcul.real();
-        int partie_imag = calcul.imag();
-//        cout << " a = " << a << "\n";
-//        cout << " calcul = " << calcul << "\n";
-        
-        if (((calcul.real() - partie_relle) <= 0) and ((calcul.imag() - partie_imag) <= 0)) {
+        double b2 = norm(b);
+        complex<double> p = (x - ac)*conj(b);
+        double r = p.real();
+        double s = p.imag();
+        if ((r % b2 == 0) and (s % b2 == 0)){
             liste.push_back(a);
         }
-    }
-
+     }
     return liste;
 }
 
@@ -75,12 +73,15 @@ void rempli(Arbre& arbre, complex<double> b) {
 
     for (double chiffre: prochains_c) {
         if (chiffre == 0) {
-            return;
+            Arbre fils = Arbre(0, {});
+            arbre.fils.push_back(fils);
         }
-    chiffres_fils.push_back(chiffre);
-    Arbre fils = Arbre((arbre.x - chiffre) / b, chiffres_fils);
-    rempli(fils, b);
-    arbre.fils.push_back(fils);
+        else {
+            chiffres_fils.push_back(chiffre);
+            Arbre fils = Arbre((arbre.x - chiffre) / b, chiffres_fils);
+            rempli(fils, b);
+            arbre.fils.push_back(fils);
+        }
     }
 //    arbre.affiche();
 }
@@ -114,6 +115,7 @@ int main(){
         vector<double> liste_initiale = {};
         Arbre arbre = Arbre(x,liste_initiale );
         rempli(arbre, b);
+        arbre.affiche();
         vector<double> liste = arbre.conclusion();
         if (liste.size() == 0) {
             cout << "The code cannot be decrypted.\n";
@@ -125,8 +127,6 @@ int main(){
                 resultat = resultat + to_string(int_chiffre) + " ";
             }
         cout << "Les chiffres sont : " << resultat << "\n";
-
-            }
-   }
+        }
+    }
 }
-
